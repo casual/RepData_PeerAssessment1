@@ -5,6 +5,7 @@ date: "19 de mayo de 2016"
 output: html_document
 ---
 
+
 ###Loading and preprocesing the data
 
 We read the data and remove the NAs cases:
@@ -23,6 +24,7 @@ rawdata$interval <- as.factor(rawdata$interval)
 cleandata$interval <- as.factor(cleandata$interval)
 ```
 
+
 ###What is mean total number of steps taken per day?
 
 The total number of steps taken per day is given by:
@@ -35,7 +37,7 @@ total_steps <- tapply(cleandata$steps,cleandata$date,sum)
 Now we make a histogram of the total steps:
 
 ```{r}
-hist(total_steps, col = "green", xlab = "Total Steps" title = "Histogram of total steps per day")
+hist(total_steps, col = "green", xlab = "Total Steps", main = "Histogram of total steps per day")
 ```
 
 Finally, we take the *mean* and *median* of the total number of steps:
@@ -47,17 +49,57 @@ total_mean
 total_median
 ```
 
+
 ###What is the average daily activity pattern?
 
 First we take the average number of steps on each interval, and then we plot:
 
 ```{r}
 avg <- tapply(cleandata$steps, cleandata$interval, mean)
-plot(avg ~ levels(cleandata$interval), type = "l", col = "blue", xlab ="Intervals [minutes]", ylab = "Average of steps", title = "Average of steps per interval")
+plot(avg ~ levels(cleandata$interval), type = "l", col = "blue", xlab ="Intervals [minutes]", ylab = "Average of steps", main = "Average of steps per interval")
 grid(nx = 50)
 ```
 
-And the intervar with the maximum number of steps:
+And the interval with the maximum number of steps:
 ```{r}
 avg[avg == max(avg)]
 ```
+
+
+###Imputing missing values
+
+First we calculate the number of missing values:
+
+```{r}
+total_nas <- sum(!complete.cases(rawdata))
+total_nas
+```
+
+Now we fill the misses values with the mean of the interval, and build a new dataset:
+
+```{r}
+na_cases <- which(!complete.cases(rawdata))
+filldata <- rawdata
+for (i in na_cases) {
+        interval <- as.character(filldata[i,3])
+        filldata[i,1] <- avg[interval]
+}
+```
+
+And we have a new dataset called *_filldata_*
+Finally, we make an histogram of the total steps per day:
+
+```{r}
+total_steps_fill <- tapply(filldata$steps,filldata$date,sum)
+hist(total_steps_fill, col = "red", xlab = "Total Steps", main = "Histogram of total steps per day within filled data")
+```
+
+And calculate mean and median for the new data:
+
+```{r}
+total_mean_fill <- mean(total_steps_fill)
+total_median_fill <- median(total_steps_fill)
+total_mean_fill
+total_median_fill
+```
+It's easy to note that there is a little difference between the old and new median. The efect of filling the missing values is minimun, that is because we are using the average values to do it.

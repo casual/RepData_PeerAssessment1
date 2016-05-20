@@ -16,6 +16,13 @@ cleandata <- rawdata[ok,]
 cleandata$date <- factor(cleandata$date)
 ```
 
+Then we take "interval" variable as factor to make future calculations:
+
+```{r}
+rawdata$interval <- as.factor(rawdata$interval)
+cleandata$interval <- as.factor(cleandata$interval)
+```
+
 ###What is mean total number of steps taken per day?
 
 The total number of steps taken per day is given by:
@@ -28,12 +35,29 @@ total_steps <- tapply(cleandata$steps,cleandata$date,sum)
 Now we make a histogram of the total steps:
 
 ```{r}
-hist(total_steps, col = "green")
+hist(total_steps, col = "green", xlab = "Total Steps" title = "Histogram of total steps per day")
 ```
 
 Finally, we take the *mean* and *median* of the total number of steps:
 
 ```{r}
-mean(total_steps)
-median(total_steps)
+total_mean <- mean(total_steps)
+total_median <- median(total_steps)
+total_mean
+total_median
+```
+
+###What is the average daily activity pattern?
+
+First we take the average number of steps on each interval, and then we plot:
+
+```{r}
+avg <- tapply(cleandata$steps, cleandata$interval, mean)
+plot(avg ~ levels(cleandata$interval), type = "l", col = "blue", xlab ="Intervals [minutes]", ylab = "Average of steps", title = "Average of steps per interval")
+grid(nx = 50)
+```
+
+And the intervar with the maximum number of steps:
+```{r}
+avg[avg == max(avg)]
 ```

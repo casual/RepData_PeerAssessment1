@@ -1,0 +1,13 @@
+---
+title: "Course Project 1"
+author: "Diego Gajardo"
+date: "19 de mayo de 2016"
+output: html_document
+---
+First we read the data and remove the NAs cases:
+
+```{r}
+rawdata <- read.csv("activity.csv")
+ok <- complete.cases(rawdata)
+cleandata <- rawdata[ok,]
+```

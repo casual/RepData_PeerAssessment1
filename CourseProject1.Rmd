@@ -4,10 +4,36 @@ author: "Diego Gajardo"
 date: "19 de mayo de 2016"
 output: html_document
 ---
-First we read the data and remove the NAs cases:
 
-```{r}
+###Loading and preprocesing the data
+
+We read the data and remove the NAs cases:
+
+```{r cache = TRUE}
 rawdata <- read.csv("activity.csv")
 ok <- complete.cases(rawdata)
 cleandata <- rawdata[ok,]
+cleandata$date <- factor(cleandata$date)
+```
+
+###What is mean total number of steps taken per day?
+
+The total number of steps taken per day is given by:
+
+```{r}
+total_steps <- tapply(cleandata$steps,cleandata$date,sum)
+(total_steps)
+```
+
+Now we make a histogram of the total steps:
+
+```{r}
+hist(total_steps, col = "green")
+```
+
+Finally, we take the *mean* and *median* of the total number of steps:
+
+```{r}
+mean(total_steps)
+median(total_steps)
 ```

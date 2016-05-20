@@ -115,6 +115,7 @@ filldata["day"] <- NA
 for (i in seq(1,nrow(filldata))){
         filldata[i,"day"] <- ifelse(weekdays(as.Date(filldata[i,"date"])) == "sábado" | weekdays(as.Date(filldata[i,"date"])) == "domingo", "weekend","weekday")        
 }
+filldata$day <- as.factor(filldata$day)
 head(filldata)
 ```
 
@@ -122,5 +123,5 @@ And now we plot the average number of steps taken:
 
 ```{r}
 library(ggplot2)
-ggplot(filldata, aes(x = interval, y = steps)) + stat_summary(fun.y="mean", geom="line")+facet_wrap(~day)
+ggplot(filldata, aes(x = interval, y = steps, group = 1)) + stat_summary(fun.y = "mean", geom = "line") + facet_wrap(~day)
 ```
